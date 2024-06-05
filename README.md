@@ -28,14 +28,50 @@ Here you will get a choice to use Blazor Server/ Blazor Client with or without B
 code blocks for commands
 ```
  -->
- * Here is the explaination of how I have setup Routes:
- 1. Cascading Value: The CascadingValue component provides the CheckLayout function's result to the child components rendered by the RouteView.
+ **Here is the explaination of how I have setup Routes:**
+ * Cascading Value: The CascadingValue component provides the CheckLayout function's result to the child components rendered by the RouteView.
 
-2. CheckLayout Function: This function determines the appropriate layout based on the route and returns a LayoutComponentBase instance.
+* CheckLayout Function: This function determines the appropriate layout based on the route and returns a LayoutComponentBase instance.
 
-3. RouteView: The RouteView component now uses the default layout specified (@typeof(MainLayout)). It renders the matched component, and that component receives the layout information from the cascading value.
+* RouteView: The RouteView component now uses the default layout specified (@typeof(MainLayout)). It renders the matched component, and that component receives the layout information from the cascading value.
 
-4. Child Components: When a child component is rendered, it checks the cascading value to determine which layout to use. If the CheckLayout function returns typeof(AdminLayout), the component will be rendered within the AdminLayout; otherwise, it will use the MainLayout.
+* Child Components: When a child component is rendered, it checks the cascading value to determine which layout to use. If the CheckLayout function returns typeof(AdminLayout), the component will be rendered within the AdminLayout; otherwise, it will use the MainLayout.
+
+**So, what is the difference between using typeof(App).Assembly and typeof(Program).Assembly?**
+
+In Blazor, the AppAssembly attribute within the Router component determines which assemblies to search for routable components (pages and components with @page directives). Let's break down the difference between using typeof(App).Assembly and typeof(Program).Assembly with additional assemblies:
+```
+AppAssembly="@typeof(App).Assembly"
+```
+* Common Use: This is the default configuration when you create a new Blazor project. It instructs the router to look for routable components within the assembly that contains the App component (App.razor).
+*  Simplicity: This approach is straightforward and suitable for smaller projects where all your components reside in the same project as the App component.
+* Limitations: If you have multiple projects (e.g., a shared UI library) containing routable components, this won't work because the router won't search those assemblies.
+```
+AppAssembly="@typeof(Program).Assembly" AdditionalAssemblies="new[] { typeof(Client._Imports).Assembly }"
+```
+* Multiple Projects: This is used when your Blazor application has multiple projects (often in a Blazor WebAssembly hosted solution).
+* Client-Side Components: typeof(Client._Imports).Assembly refers to the assembly containing client-side components in your Blazor WebAssembly project. This tells the router to also search for components in the client-side project.
+* Flexibility: This approach offers greater flexibility for structuring your Blazor solution across multiple projects.
+* Additional Assemblies: You can add more assemblies to the AdditionalAssemblies array if you have other projects containing routable components.
+
+**How to Choose:**
+
+* Single Project: If all your Blazor components are in one project, use typeof(App).Assembly.
+
+* Multiple Projects: If you have multiple projects (e.g., Blazor WebAssembly hosted in ASP.NET Core), use typeof(Program).Assembly and add the necessary assemblies to AdditionalAssemblies.
+
+* _Imports.razor: In each project containing routable components, make sure the _Imports.razor file has the @using Microsoft.AspNetCore.Components.Routing directive. This ensures the @page directive is recognized.
+
+**Understanding App and Program:**
+
+* App.razor: This is the root component of your Blazor application. It typically sets up routing, error handling, and provides a layout for your pages.
+
+* Program.cs (Blazor WebAssembly): This is the entry point for your Blazor WebAssembly app. It bootstraps the application, configures services, and starts the runtime.
+
+**Key Points:**
+
+>Both configurations tell the router where to find the components to display for specific routes.
+Choose the configuration that best suits your project structure and organization.
 
 * Uncomment and Use this if you dont need Admin portal and want to use server and client only:
 ```
