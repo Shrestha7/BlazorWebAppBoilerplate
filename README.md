@@ -1,6 +1,6 @@
 # Blazor Web App BoilerPlate
 
-A quick startup template with Blazor server and client including Admin portal.
+A quick startup template with Blazor Server and Blazor Client including Blazor Admin portal.
 
 ## Description
 
