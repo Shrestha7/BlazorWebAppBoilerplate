@@ -1,0 +1,47 @@
+﻿@* 
+    ----------------- Explanation: --------------------------
+
+1. Cascading Value: The CascadingValue component provides the CheckLayout function's result to the child components rendered by the RouteView.
+
+2. CheckLayout Function: This function determines the appropriate layout based on the route and returns a LayoutComponentBase instance.
+
+3. RouteView: The RouteView component now uses the default layout specified (@typeof(MainLayout)). It renders the matched component, and that component receives the layout information from the cascading value.
+
+4. Child Components: When a child component is rendered, it checks the cascading value to determine which layout to use. If the CheckLayout function returns typeof(AdminLayout), the component will be rendered within the AdminLayout; otherwise, it will use the MainLayout. *@
+
+
+@* 
+    ------------------ Use this if you dont need Admin portal ------------------
+
+    <Router AppAssembly="typeof(Program).Assembly" AdditionalAssemblies="new[] { typeof(Client._Imports).Assembly }">
+    <Found Context="routeData">
+        <RouteView RouteData="routeData" DefaultLayout="typeof(Layout.MainLayout)" />
+        <FocusOnNavigate RouteData="routeData" Selector="h1" />
+    </Found>
+</Router> *@
+
+<Router AppAssembly="@typeof(Program).Assembly" AdditionalAssemblies="new[] { typeof(Client._Imports).Assembly }">
+    <Found Context="routeData">
+        <CascadingValue Value="CheckLayout(routeData)">
+            <RouteView RouteData="@routeData" DefaultLayout="@typeof(Layout.MainLayout)" />
+        </CascadingValue>
+    </Found>
+    <NotFound>
+        <LayoutView Layout="@typeof(Layout.MainLayout)">
+            <p>Sorry, there's nothing at this address.</p>
+        </LayoutView>
+    </NotFound>
+</Router>
+
+
+
+@code {
+   
+    LayoutComponentBase CheckLayout(RouteData routeData)
+    {
+        var page = routeData.PageType;
+        var layoutType = page.Namespace.Contains("Admin") ? typeof(Layout.AdminLayout) : typeof(Layout.MainLayout);
+        return (LayoutComponentBase)Activator.CreateInstance(layoutType)!;
+    }
+
+   }
