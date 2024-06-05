@@ -1,4 +1,4 @@
-# Blazor Web App BoilerPlate(Blazor Server | Blazor Client(WebAssembly) | BlazorAdminPortal)
+# Blazor Web App BoilerPlate (Blazor Server | Blazor Client(WebAssembly) | BlazorAdminPortal)
 
 A quick startup template with Blazor Server and Blazor Client including Blazor Admin portal.
 
